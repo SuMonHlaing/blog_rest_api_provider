@@ -8,6 +8,10 @@ class GetAllPostResponse {
     id = json['id'];
     title = json['title'];
   }
+  @override
+  String toString() {
+    return 'GetAllPostResponse(id: $id,title: $title)';
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
