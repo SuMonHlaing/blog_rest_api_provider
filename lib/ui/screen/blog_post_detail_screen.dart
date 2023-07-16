@@ -26,13 +26,28 @@ class _BlogPostDetailScreenState extends State<BlogPostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Consumer<GetCompletePostNOtifier>(
+            builder: (_, getCompletePostNotifier, __) {
+          GetCompletePostState getCompletePostState =
+              getCompletePostNotifier.getCompletePostState;
+          if (getCompletePostState is GetCompletePostSuccess) {
+            GetOnePostResponse getOnePostResponse =
+                getCompletePostState.getOnePostResponse;
+            return Text(getOnePostResponse.title!);
+          } else if (getCompletePostState is GetCompletePostFail) {
+            return Text(getCompletePostState.errorString);
+          }
+          return const Text('.............');
+        }),
+      ),
       body: Consumer<GetCompletePostNOtifier>(
           builder: (_, getcompletePostNotifier, __) {
         GetCompletePostState getCompletePostState =
             getcompletePostNotifier.getCompletePostState;
         if (getCompletePostState is GetCompletePostSuccess) {
-          GetOnePostResponse getOnePostResponse = getCompletePostState.getOnePostResponse;
+          GetOnePostResponse getOnePostResponse =
+              getCompletePostState.getOnePostResponse;
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),

@@ -77,8 +77,12 @@ class GetAllPostWidget extends StatelessWidget {
           GetAllPostResponse getAllPostResponse = getAllPostResponseList[index];
           return InkWell(
             onTap: () {
-              if(getAllPostResponse.id!= null) {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogPostDetailScreen(id: getAllPostResponse.id!)));
+              if (getAllPostResponse.id != null) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BlogPostDetailScreen(id: getAllPostResponse.id!)));
               }
             },
             child: Card(
