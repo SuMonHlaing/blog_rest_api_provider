@@ -14,7 +14,13 @@ class BlogUploadNotifier extends ChangeNotifier {
       uplaoadUIState = UploadUILoading(0);
       notifyListeners();
       final blogUploadResponse = await _blogApiService.uploadPost(
-          title: title, body: body, data: data);
+          title: title,
+          body: body,
+          data: data,
+          sendProgress: (int send, int size) {
+            int progress = ((send / size) * 100).toInt();
+            uplaoadUIState = UploadUILoading(progress);
+          });
       uplaoadUIState = UploadUISuccess(blogUploadResponse);
       notifyListeners();
     } catch (e) {
