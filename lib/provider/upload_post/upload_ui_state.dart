@@ -1,9 +1,12 @@
 import 'package:blog_rest_api_provider/data/model/blog_upload_response.dart';
 
 abstract class UplaoadUIState {}
+class UploadForm extends UplaoadUIState{
+  
+}
 
 class UploadUILoading extends UplaoadUIState {
-  final int progress;
+  final double progress;
   UploadUILoading(this.progress);
 }
 

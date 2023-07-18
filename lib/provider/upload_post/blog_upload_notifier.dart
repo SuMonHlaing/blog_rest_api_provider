@@ -4,12 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class BlogUploadNotifier extends ChangeNotifier {
-  UplaoadUIState uplaoadUIState = UploadUILoading(0);
+  UplaoadUIState uplaoadUIState = UploadForm();
   final BlogApiService _blogApiService = BlogApiService();
   void upload(
       {required String title,
       required String body,
-      required FormData data}) async {
+      required FormData? data}) async {
     try {
       uplaoadUIState = UploadUILoading(0);
       notifyListeners();
@@ -18,7 +18,7 @@ class BlogUploadNotifier extends ChangeNotifier {
           body: body,
           data: data,
           sendProgress: (int send, int size) {
-            int progress = ((send / size) * 100).toInt();
+            double progress = ((send / size) * 100);
             uplaoadUIState = UploadUILoading(progress);
           });
       uplaoadUIState = UploadUISuccess(blogUploadResponse);
