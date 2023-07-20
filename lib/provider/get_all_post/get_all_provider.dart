@@ -13,9 +13,9 @@ class GetAllPostNotifier extends ChangeNotifier {
       List<GetAllPostResponse> getAllPostList = await _apiService.getAllPost();
       getAllPostState = GetAllPostSuccess(getAllPostList);
       notifyListeners();
-    } 
-    catch (e) {
+    } catch (e) {
       getAllPostState = GetAllPostFail(e.toString());
+      notifyListeners();
     }
   }
 }

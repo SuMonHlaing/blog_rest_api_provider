@@ -27,15 +27,36 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Blog Api Lessons"),
-        centerTitle: true,
       ),
       body: Consumer<GetAllPostNotifier>(builder: (_, getAllProvider, __) {
         GetAllPostState getAllPostState = getAllProvider.getAllPostState;
         if (getAllPostState is GetAllPostSuccess) {
           List<GetAllPostResponse> getAllPostResponseList =
               getAllPostState.getAllPostList;
-          return GetAllPostWidget(
-              getAllPostResponseList: getAllPostResponseList);
+          return ListView.builder(
+              itemCount: getAllPostResponseList.length,
+              itemBuilder: (context, index) {
+                GetAllPostResponse getAllPostResponse =
+                    getAllPostResponseList[index];
+                return InkWell(
+                  onTap: () {
+                    if (getAllPostResponse.id != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BlogPostDetailScreen(
+                                  id: getAllPostResponse.id!)));
+                    }
+                  },
+                  child: Card(
+                    child: ListTile(
+                      title: Text('${getAllPostResponse.title}'),
+                    ),
+                  ),
+                );
+              });
+          // return GetAllPostWidget(
+          //     getAllPostResponseList: getAllPostResponseList);
         } else if (getAllPostState is GetAllPostFail) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -54,11 +75,18 @@ class _HomeScreenState extends State<HomeScreen> {
           child: CircularProgressIndicator.adaptive(),
         );
       }),
-   floatingActionButton: FloatingActionButton(
-    child: const Icon(Icons.add),
-    onPressed: (){
-      Navigator.push(context, MaterialPageRoute(builder: (_)=> const BlogUploadScreen()));
-    }), );
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () async {
+            final result = await Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const BlogUploadScreen()));
+            if (result != null && result == "success") {
+              if (mounted) {
+                _getAllPost(context);
+              }
+            }
+          }),
+    );
   }
 
   void _getAllPost(BuildContext ctx) {
@@ -66,36 +94,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class GetAllPostWidget extends StatelessWidget {
-  const GetAllPostWidget({
-    super.key,
-    required this.getAllPostResponseList,
-  });
+// class GetAllPostWidget extends StatelessWidget {
+//   const GetAllPostWidget({
+//     super.key,
+//     required this.getAllPostResponseList,
+//   });
 
-  final List<GetAllPostResponse> getAllPostResponseList;
+//   final List<GetAllPostResponse> getAllPostResponseList;
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: getAllPostResponseList.length,
-        itemBuilder: (context, index) {
-          GetAllPostResponse getAllPostResponse = getAllPostResponseList[index];
-          return InkWell(
-            onTap: () {
-              if (getAllPostResponse.id != null) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            BlogPostDetailScreen(id: getAllPostResponse.id!)));
-              }
-            },
-            child: Card(
-              child: ListTile(
-                title: Text('${getAllPostResponse.title}'),
-              ),
-            ),
-          );
-        });
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView.builder(
+//         itemCount: getAllPostResponseList.length,
+//         itemBuilder: (context, index) {
+//           GetAllPostResponse getAllPostResponse = getAllPostResponseList[index];
+//           return InkWell(
+//             onTap: () async {
+//               if (getAllPostResponse.id != null) {
+//                 final result = await Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                         builder: (context) =>
+//                             BlogPostDetailScreen(id: getAllPostResponse.id!)));
+//                 if (result != null && result == 'successfully') {}
+//               }
+//             },
+//             child: Card(
+//               child: ListTile(
+//                 title: Text('${getAllPostResponse.title}'),
+//               ),
+//             ),
+//           );
+//         });
+//   }
+// }

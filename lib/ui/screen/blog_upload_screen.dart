@@ -28,12 +28,13 @@ class _BlogUploadScreenState extends State<BlogUploadScreen> {
       ),
       body: Consumer<BlogUploadNotifier>(
         builder: (_, blogUploadNotifier, __) {
-          UplaoadUIState uplaoadUIState = blogUploadNotifier.uplaoadUIState;
+          UplaoadUIState uplaoadUIState = blogUploadNotifier.uploadUIState;
           if (uplaoadUIState is UploadUILoading) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('uploading please wait........${uplaoadUIState.progress}%'),
+                Text(
+                    'uploading please wait........${uplaoadUIState.progress}%'),
                 const Divider(),
                 LinearProgressIndicator(
                   value: uplaoadUIState.progress,
@@ -46,7 +47,12 @@ class _BlogUploadScreenState extends State<BlogUploadScreen> {
               children: [
                 Text(uplaoadUIState.blogUploadResponse.result ?? ''),
                 const Divider(),
-                ElevatedButton(onPressed: () {}, child: const Text('ok'))
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, 'success');
+                      blogUploadNotifier.uploadUIState = UploadForm();
+                    },
+                    child: const Text('ok'))
               ],
             );
           } else if (uplaoadUIState is UploadUIFail) {
@@ -55,7 +61,11 @@ class _BlogUploadScreenState extends State<BlogUploadScreen> {
               children: [
                 Text(uplaoadUIState.errorMessage),
                 const Divider(),
-                ElevatedButton(onPressed: () {}, child: const Text('Try Again'))
+                ElevatedButton(
+                    onPressed: () {
+                      blogUploadNotifier.tryAgain();
+                    },
+                    child: const Text('Try Again'))
               ],
             );
           }
@@ -106,13 +116,14 @@ class _BlogUploadScreenState extends State<BlogUploadScreen> {
                           FormData? data;
                           if (_image != null) {
                             data = FormData.fromMap({
-                              'photo':await MultipartFile.fromFile(_image!.path)
+                              'photo':
+                                  await MultipartFile.fromFile(_image!.path)
                             });
                           }
-                          if(mounted) {
+                          if (mounted) {
                             Provider.of<BlogUploadNotifier>(context,
-                                  listen: false)
-                              .upload(title: title, body: body, data: data);
+                                    listen: false)
+                                .upload(title: title, body: body, data: data);
                           }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
