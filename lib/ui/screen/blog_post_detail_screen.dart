@@ -1,7 +1,9 @@
 import 'package:blog_rest_api_provider/data/model/get_one_post_response.dart';
+import 'package:blog_rest_api_provider/provider/delete_post/delete_post_notifier.dart';
 import 'package:blog_rest_api_provider/provider/get_complete_post/get_complete_post_notifier.dart';
 import 'package:blog_rest_api_provider/provider/get_complete_post/get_complete_post_state.dart';
 import 'package:blog_rest_api_provider/service/blog_api_service.dart';
+import 'package:blog_rest_api_provider/ui/screen/delete_post_screen.dart';
 import 'package:blog_rest_api_provider/ui/screen/update_post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,33 +44,34 @@ class _BlogPostDetailScreenState extends State<BlogPostDetailScreen> {
           return const Text('.............');
         }),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-              ),
-              onPressed: () async {
-                final result = await Navigator.push(
+          IconButton(
+            onPressed: () async {
+              final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UpdatePostScreen(id: widget.id)));
+              if (result != null && result == "success") {
+                if (mounted) {
+                  _getBlogDetail(widget.id);
+                }
+              }
+            },
+            icon: const Icon(
+              Icons.edit,
+            ),
+          ),
+          IconButton(
+              onPressed: () {
+                Provider.of<DeletePostNotifier>(context, listen: false)
+                    .deletePost(id: widget.id);
+                Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => UpdatePostScreen(id: widget.id)));
-                if (result != null && result == "success") {
-                  if (mounted) {
-                    _getBlogDetail(widget.id);
-                  }
-                }
+                        builder: (context) => DeletePostScreen(
+                              id: widget.id,
+                            )));
               },
-              icon: const Icon(
-                Icons.edit,
-                color: Colors.black,
-              ),
-              label: const Text(
-                'update post',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          )
+              icon: const Icon(Icons.delete))
         ],
       ),
       body: Consumer<GetCompletePostNOtifier>(
@@ -89,7 +92,8 @@ class _BlogPostDetailScreenState extends State<BlogPostDetailScreen> {
                   const Divider(),
                   if (getOnePostResponse.photo != null)
                     Image.network(
-                        '${BlogApiService.baseUrl}${getOnePostResponse.photo}'),
+                        '${BlogApiService.baseUrl}${getOnePostResponse.photo}',
+                        loadingBuilder: (context, child, loadingProgress) =>const CircularProgressIndicator.adaptive(),),
                 ],
               ),
             ),

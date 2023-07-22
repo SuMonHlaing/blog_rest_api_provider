@@ -19,4 +19,15 @@ class GetCompletePostNOtifier extends ChangeNotifier {
       notifyListeners();
     }
   }
+    void deletePost({required int id}) async{
+    getCompletePostState = GetCompletePostLoading();
+    notifyListeners();
+    try{
+      await _blogApiService.deletePost(id: id);
+
+    }
+    catch(_){
+
+    }
+  }
 }

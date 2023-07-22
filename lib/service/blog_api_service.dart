@@ -1,4 +1,5 @@
 import 'package:blog_rest_api_provider/data/model/blog_upload_response.dart';
+import 'package:blog_rest_api_provider/data/model/delete_post_response.dart';
 import 'package:blog_rest_api_provider/data/model/get_all_post_response.dart';
 import 'package:blog_rest_api_provider/data/model/get_one_post_response.dart';
 import 'package:blog_rest_api_provider/data/model/update_response.dart';
@@ -49,6 +50,12 @@ class BlogApiService {
     final updateResponse =
         await dio.put('${baseUrl}post?id=$id&title=$title&body=$body');
     return UpdateResponse.fromJson(updateResponse.data);
+  }
+
+  Future<DeletePostResponse> deletePost({required int id}) async {
+    Dio dio = await _getDio();
+    final deletePostResponse = await dio.delete('${baseUrl}post?id=$id');
+    return DeletePostResponse.fromJson(deletePostResponse.data);
   }
 
   Future<Dio> _getDio() async {

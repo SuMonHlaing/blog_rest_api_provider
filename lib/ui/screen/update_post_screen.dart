@@ -1,3 +1,4 @@
+import 'package:blog_rest_api_provider/provider/get_all_post/get_all_provider.dart';
 import 'package:blog_rest_api_provider/provider/update_post/update_post_notifier.dart';
 import 'package:blog_rest_api_provider/provider/update_post/update_post_state.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,8 @@ class _UpdatePostScreenState extends State<UpdatePostScreen> {
               ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context, 'success');
-                    updatePostNotifier.updatePostState = UpdateForm();
+                    Provider.of<GetAllPostNotifier>(context, listen: false)
+                        .getAllPost();
                   },
                   child: const Text('ok'))
             ],
@@ -48,9 +50,11 @@ class _UpdatePostScreenState extends State<UpdatePostScreen> {
             children: [
               Text(updatePostState.errorMessage),
               const Divider(),
-              ElevatedButton(onPressed: () {
-                updatePostNotifier.updatePostState = UpdateForm();
-              }, child: const Text('Try Again'))
+              ElevatedButton(
+                  onPressed: () {
+                    updatePostNotifier.updatePostState = UpdateForm();
+                  },
+                  child: const Text('Try Again'))
             ],
           );
         }
